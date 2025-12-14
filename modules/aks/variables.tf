@@ -16,7 +16,10 @@ variable "resource_group_name" {
 variable "tags" {
   description = "Tags to apply to all resources created by this module."
   type        = map(string)
-  default     = {}
+  default = {
+    "createdWith" = "Terraform/OpenTofu"
+    "environment" = "dev"
+  }
 }
 
 variable "dns_prefix" {
@@ -35,8 +38,12 @@ variable "automatic_upgrade_channel" {
 }
 
 variable "sku_tier" {
-  description = "SKU tier for the AKS cluster (e.g., Free, Paid)."
-  type        = string
+  description = "SKU tier for the AKS cluster (e.g., Free, Standard, Premium)."
+  validation {
+    condition     = contains(["Free", "Standard", "Premium"], var.sku_tier)
+    error_message = "SKU tier must be one of these: Free, Standard or Premium."
+  }
+  type = string
 }
 
 variable "workload_identity_enabled" {
